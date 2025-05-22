@@ -1,0 +1,63 @@
+% fix graphics, see https://tex.stackexchange.com/a/316917
+\PassOptionsToPackage{dvipdfmx}{graphicx}
+
+\documentclass{jsarticle}
+
+\usepackage{adjustbox}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\usepackage[table]{xcolor}
+\colorlet{hiragana}{blue!15}
+\colorlet{katakana}{white!25}
+
+\pagestyle{empty}
+
+\begin{document}
+
+{
+\hfill
+\Huge
+\colorbox{hiragana}{ひらがな}\colorbox{katakana}{カタカナ}
+\hfill
+}
+
+\newcommand{\ctop}[1]{\multicolumn{2}{c}{#1}}
+\newcommand{\cc}[2]{\cellcolor{hiragana}{\large #1} & \cellcolor{katakana}{\large #2}}
+\newcommand{\tbe}[1]{\multicolumn{2}{c}{#1}}
+
+\hspace*{-1cm}
+\begin{adjustbox}{width=\linewidth}
+    \renewcommand{\arraystretch}{1.4}
+    % rounded corners based on https://tex.stackexchange.com/a/10228
+    \begin{tikzpicture}
+        \node (table) [inner sep=0pt] {
+            \begin{tabular}{c*{10}{c}}
+                  & \ctop{a}  & \ctop{i}  & \ctop{u}  & \ctop{e}  & \ctop{o}  \\
+                  & \cc{あ}{ア} & \cc{い}{イ} & \cc{う}{ウ} & \cc{え}{エ} & \cc{お}{オ} \\
+                k & \cc{か}{カ} & \cc{き}{キ} & \cc{く}{ク} & \cc{け}{ケ} & \cc{こ}{コ} \\
+                s & \cc{さ}{サ} & \cc{し}{シ} & \cc{す}{ス} & \cc{せ}{セ} & \cc{そ}{ソ} \\
+                t & \cc{た}{タ} & \cc{ち}{チ} & \cc{つ}{ツ} & \cc{て}{テ} & \cc{と}{ト} \\
+                n & \cc{な}{ナ} & \cc{に}{ニ} & \cc{ぬ}{ヌ} & \cc{ね}{ネ} & \cc{の}{ノ} \\
+                h & \cc{は}{ハ} & \cc{ひ}{ヒ} & \cc{ふ}{フ} & \cc{へ}{ヘ} & \cc{ほ}{ホ} \\
+                m & \cc{ま}{マ} & \cc{み}{ミ} & \cc{む}{ム} & \cc{め}{メ} & \cc{も}{モ} \\
+                y & \cc{や}{ヤ} & \tbe{}{}  & \cc{ゆ}{ユ} & \tbe{}{}  & \cc{よ}{ヨ} \\
+                r & \cc{ら}{ラ} & \cc{り}{リ} & \cc{る}{ル} & \cc{れ}{レ} & \cc{ろ}{ロ} \\
+                w & \cc{わ}{ワ} & \tbe{}    & \tbe{}    & \tbe{}    & \cc{を}{ヲ} \\
+                  & \cc{ん}{ン} & \tbe{}    & \tbe{}    & \tbe{}    & \tbe{}    \\
+            \end{tabular}
+        };
+        % magic numbers to correctly align with second row and column
+        % there is probably a better way to do this..
+        \coordinate (nw) at ($(table.north west)+(20.5pt,-22.5pt)$);
+        \coordinate (se) at ($(table.south east)$);
+
+        % mask cell highlight for pretty rounded corners
+        \filldraw[fill=white,even odd rule,draw=white]
+        (nw) rectangle (se) {[rounded corners=.5em](nw) rectangle (se)};
+        % draw table border
+        \draw [rounded corners=.5em, draw=black] (nw) rectangle (se);
+    \end{tikzpicture}
+\end{adjustbox}
+
+\end{document}
