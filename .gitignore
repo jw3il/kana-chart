@@ -10,3 +10,5 @@
 *.png
 *.svg
 *.jpg
+!doc/chart_preview.jpg
+!doc/chart.pdf
