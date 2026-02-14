@@ -2,62 +2,104 @@
 \PassOptionsToPackage{dvipdfmx}{graphicx}
 
 \documentclass{jsarticle}
+\usepackage[a4paper, margin=0.2cm]{geometry}
+\pagestyle{empty}
 
-\usepackage{adjustbox}
 \usepackage{tikz}
 \usetikzlibrary{calc}
 
-\usepackage[table]{xcolor}
-\colorlet{hiragana}{blue!15}
-\colorlet{katakana}{white!25}
+\usepackage{xcolor}
+% Seaborn hls colors: sns.color_palette("hls", 11)
+\definecolor{c1}{rgb}{0.86, 0.3712, 0.33999999999999997}
+\definecolor{c2}{rgb}{0.86, 0.6548363636363637, 0.33999999999999997}
+\definecolor{c3}{rgb}{0.7815272727272726, 0.86, 0.33999999999999997}
+\definecolor{c4}{rgb}{0.4978909090909092, 0.86, 0.33999999999999997}
+\definecolor{c5}{rgb}{0.33999999999999997, 0.86, 0.46574545454545463}
+\definecolor{c6}{rgb}{0.33999999999999997, 0.86, 0.7493818181818184}
+\definecolor{c7}{rgb}{0.33999999999999997, 0.6869818181818181, 0.86}
+\definecolor{c8}{rgb}{0.33999999999999997, 0.4033454545454544, 0.86}
+\definecolor{c9}{rgb}{0.560290909090909, 0.33999999999999997, 0.86}
+\definecolor{c10}{rgb}{0.8439272727272731, 0.33999999999999997, 0.86}
+\definecolor{c11}{rgb}{0.86, 0.33999999999999997, 0.592436363636363}
 
-\pagestyle{empty}
+\def\kanastyle{\sffamily}
+\def\latinstyle{\sffamily}
 
 \begin{document}
 
-{
-\hfill
-\Huge
-\colorbox{hiragana}{ひらがな}\colorbox{katakana}{カタカナ}
-\hfill
+\def\x{0pt} % x position
+\def\y{0pt} % y position
+\def\kanacolor{gray} % kana base color
+
+\def\tcellsize{9pt}
+\def\tcellshift{8.95pt} % some overlap to avoid gaps
+\def\xp{\pgfmathsetlengthmacro{\x}{\x + \tcellshift}}
+\def\yp{\pgfmathsetlengthmacro{\y}{\y - \tcellshift}}
+
+\def\doublecolumnspacing{2pt}
+\def\leftheaderspacing{1pt}
+\def\headerspacing{0.5pt}
+\def\rowrspacing{4.75pt}
+
+% latin node
+\newcommand{\lnode}[2]{%
+\node[anchor=south west,inner sep=0.2pt,outer sep=0,fill=#1,minimum size=\tcellsize,label={[yshift=-10.55pt]:{\latinstyle #2}}] at (\x,\y) {};%
 }
 
-\newcommand{\ctop}[1]{\multicolumn{2}{c}{#1}}
-\newcommand{\cc}[2]{\cellcolor{hiragana}{\large #1} & \cellcolor{katakana}{\large #2}}
-\newcommand{\tbe}[1]{\multicolumn{2}{c}{#1}}
+% double-size latin node for header
+\newcommand{\lnoded}[2]{%
+\node[anchor=south west,inner sep=0.2pt,outer sep=0,fill=#1,minimum height=\tcellsize,minimum width=2*\tcellsize,label={[yshift=-10.55pt]:{\latinstyle #2}}] at (\x,\y) {};%
+}
 
-\hspace*{-1cm}
-\begin{adjustbox}{width=\linewidth}
-    \renewcommand{\arraystretch}{1.4}
-    % rounded corners based on https://tex.stackexchange.com/a/10228
-    \begin{tikzpicture}
-        \node (table) [inner sep=0pt] {
-            \begin{tabular}{c*{10}{c}}
-                  & \ctop{a}  & \ctop{i}  & \ctop{u}  & \ctop{e}  & \ctop{o}  \\
-                  & \cc{あ}{ア} & \cc{い}{イ} & \cc{う}{ウ} & \cc{え}{エ} & \cc{お}{オ} \\
-                k & \cc{か}{カ} & \cc{き}{キ} & \cc{く}{ク} & \cc{け}{ケ} & \cc{こ}{コ} \\
-                s & \cc{さ}{サ} & \cc{し}{シ} & \cc{す}{ス} & \cc{せ}{セ} & \cc{そ}{ソ} \\
-                t & \cc{た}{タ} & \cc{ち}{チ} & \cc{つ}{ツ} & \cc{て}{テ} & \cc{と}{ト} \\
-                n & \cc{な}{ナ} & \cc{に}{ニ} & \cc{ぬ}{ヌ} & \cc{ね}{ネ} & \cc{の}{ノ} \\
-                h & \cc{は}{ハ} & \cc{ひ}{ヒ} & \cc{ふ}{フ} & \cc{へ}{ヘ} & \cc{ほ}{ホ} \\
-                m & \cc{ま}{マ} & \cc{み}{ミ} & \cc{む}{ム} & \cc{め}{メ} & \cc{も}{モ} \\
-                y & \cc{や}{ヤ} & \tbe{}{}  & \cc{ゆ}{ユ} & \tbe{}{}  & \cc{よ}{ヨ} \\
-                r & \cc{ら}{ラ} & \cc{り}{リ} & \cc{る}{ル} & \cc{れ}{レ} & \cc{ろ}{ロ} \\
-                w & \cc{わ}{ワ} & \tbe{}    & \tbe{}    & \tbe{}    & \cc{を}{ヲ} \\
-                  & \cc{ん}{ン} & \tbe{}    & \tbe{}    & \tbe{}    & \tbe{}    \\
-            \end{tabular}
-        };
-        % magic numbers to correctly align with second row and column
-        % there is probably a better way to do this..
-        \coordinate (nw) at ($(table.north west)+(20.5pt,-22.5pt)$);
-        \coordinate (se) at ($(table.south east)$);
+% kana node
+\newcommand{\knode}[2]{%
+\node[anchor=south west,inner sep=0.2pt,outer sep=0,fill=#1,minimum size=\tcellsize,label={[yshift=-12.8pt]:{\kanastyle #2}}] at (\x,\y) {};%
+}
 
-        % mask cell highlight for pretty rounded corners
-        \filldraw[fill=white,even odd rule,draw=white]
-        (nw) rectangle (se) {[rounded corners=.5em](nw) rectangle (se)};
-        % draw table border
-        \draw [rounded corners=.5em, draw=black] (nw) rectangle (se);
-    \end{tikzpicture}
-\end{adjustbox}
+% header
+\newcommand{\hh}[1]{\lnoded{white}{\tiny #1} \xp \xp \pgfmathsetlengthmacro{\x}{\x + \doublecolumnspacing}}
+
+% left header column
+\newcommand{\hl}[1]{\lnode{white}{\tiny #1} \xp \pgfmathsetlengthmacro{\x}{\x + \leftheaderspacing}}
+
+% double kana (hiragana and katakana) pair
+\newcommand{\dk}[2]{\knode{\kanacolor!80}{#1} \xp \knode{\kanacolor!40}{#2} \xp \pgfmathsetlengthmacro{\x}{\x + \doublecolumnspacing}}
+
+% new line
+\newcommand{\nl}{\gdef\x{0pt}\yp\pgfmathsetlengthmacro{\y}{\y - \rowrspacing}}
+
+% new line header
+\newcommand{\nlh}{\gdef\x{0pt}\yp\pgfmathsetlengthmacro{\y}{\y - \headerspacing}}
+
+% empty space (2 nodes)
+\newcommand{\ee}[1]{\pgfmathsetlengthmacro{\x}{\x + 2 * \tcellshift + \doublecolumnspacing}}
+
+\noindent\begin{center}
+\begin{tikzpicture}[scale=5, transform shape]
+\hl{}    \hh{a}      \hh{i}      \hh{u}       \hh{e}      \hh{o}      \nlh
+\gdef\kanacolor{c1}
+\hl{}    \dk{あ}{ア}  \dk{い}{イ}  \dk{う}{ウ}  \dk{え}{エ}  \dk{お}{オ} \nl
+\gdef\kanacolor{c2}
+\hl{k-}  \dk{か}{カ}  \dk{き}{キ}  \dk{く}{ク}  \dk{け}{ケ}  \dk{こ}{コ} \nl
+\gdef\kanacolor{c3}
+\hl{s-}  \dk{さ}{サ}  \dk{し}{シ}  \dk{す}{ス}  \dk{せ}{セ}  \dk{そ}{ソ} \nl
+\gdef\kanacolor{c4}
+\hl{t-}  \dk{た}{タ}  \dk{ち}{チ}  \dk{つ}{ツ}  \dk{て}{テ}  \dk{と}{ト} \nl
+\gdef\kanacolor{c5}
+\hl{n-}  \dk{な}{ナ}  \dk{に}{ニ}  \dk{ぬ}{ヌ}  \dk{ね}{ネ}  \dk{の}{ノ} \nl
+\gdef\kanacolor{c6}
+\hl{h-}  \dk{は}{ハ}  \dk{ひ}{ヒ}  \dk{ふ}{フ}  \dk{へ}{ヘ}  \dk{ほ}{ホ} \nl
+\gdef\kanacolor{c7}
+\hl{m-}  \dk{ま}{マ}  \dk{み}{ミ}  \dk{む}{ム}  \dk{め}{メ}  \dk{も}{モ} \nl
+\gdef\kanacolor{c8}
+\hl{y-}  \dk{や}{ヤ}  \ee{2}      \dk{ゆ}{ユ}  \ee{2}       \dk{よ}{ヨ} \nl
+\gdef\kanacolor{c9}
+\hl{r-}  \dk{ら}{ラ}  \dk{り}{リ}  \dk{る}{ル}  \dk{れ}{レ}  \dk{ろ}{ロ} \nl
+\gdef\kanacolor{c10}
+\hl{w-}  \dk{わ}{ワ}  \ee{2}      \ee{2}       \ee{2}      \dk{を}{ヲ} \nl
+\gdef\kanacolor{c11}
+\hl{n}   \dk{ん}{ン}
+\end{tikzpicture}
+\end{center}
 
 \end{document}
